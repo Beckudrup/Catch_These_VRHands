@@ -13,7 +13,7 @@ public class VRrigReferences : MonoBehaviour
 
     public static VRrigReferences singleTon;
 
-
+    public networkPlayer localPlayer { private set; get; }
 
     private void Awake()
     {
@@ -38,5 +38,10 @@ public class VRrigReferences : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void setNetworkPlayer (networkPlayer myPlayer)
+    {
+        localPlayer =myPlayer;
     }
 }

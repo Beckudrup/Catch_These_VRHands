@@ -11,15 +11,23 @@ public class networkPlayer : NetworkBehaviour
     [SerializeField] private Transform lHand;
     [SerializeField] private Transform rHand;
 
-    
+
+    private NetworkVariable<int> score = new NetworkVariable<int>();
 
 
 
-    // Start is called before the first frame update
-    void Start()
+
+    public override void OnNetworkSpawn()
     {
-        
+        base.OnNetworkSpawn();
+        if (IsOwner)
+        {
+            VRrigReferences.singleTon.setNetworkPlayer(this);
+        }
+        score.OnValueChanged += scoreChanged;
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -39,5 +47,25 @@ public class networkPlayer : NetworkBehaviour
 
 
         }
+    }
+
+    public void IncrementScore()
+    {
+        IncrementScoreServerRPC();
+    }
+
+    [ServerRpc]
+    public void IncrementScoreServerRPC()
+    {
+        score.Value++;
+    }
+    public void scoreChanged(int oldValue, int currentValue)
+    {
+        print(currentValue);
+    }
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        score.OnValueChanged -= scoreChanged;
     }
 }
